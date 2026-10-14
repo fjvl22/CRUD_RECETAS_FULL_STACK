@@ -1,0 +1,15 @@
+{
+  "name": "recetas-backend",
+  "version": "1.0.0",
+  "description": "Backend CRUD de recetas con Node.js, Express y Mongoose",
+  "main": "server.js",
+  "scripts": {
+    "dev": "node --watch server.js",
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.2",
+    "express": "^5.1.0",
+    "mongoose": "^8.18.0"
+  }
+}
