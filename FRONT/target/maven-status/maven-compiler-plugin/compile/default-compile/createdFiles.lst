@@ -1,0 +1,13 @@
+com\recetas\config\ApiConfig.class
+com\recetas\model\Ingredient.class
+com\recetas\view\RecipeFormDialog.class
+com\recetas\model\Recipe.class
+com\recetas\service\RecipeService.class
+com\recetas\layout\MainLayout.class
+com\recetas\model\RecipeIngredient.class
+com\recetas\RecetasApplication.class
+com\recetas\view\RecipesView.class
+com\recetas\service\IngredientService.class
+com\recetas\view\HomeView.class
+com\recetas\model\Recipe$Step.class
+com\recetas\view\IngredientsView.class
