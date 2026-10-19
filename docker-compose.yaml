@@ -1,0 +1,48 @@
+services:
+  mongodb:
+    image: mongo:8
+    container_name: recetas-mongodb
+    restart: unless-stopped
+    volumes:
+      - mongodb_data:/data/db
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "mongosh",
+          "--quiet",
+          "--eval",
+          "db.adminCommand('ping').ok"
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  back:
+    build:
+      context: ./BACK
+      dockerfile: Dockerfile
+    container-name: recetas-back
+    restart: unless-stopped
+    environment:
+      PORT: 3000
+      MONGO_URI: mongodb://mongodb:27017/recetas
+    ports:
+      -"3000:3000"
+    depends_on:
+      mongodb:
+        condition: service_healthy
+
+  front:
+    build:
+      context: ./FRONT
+      dockerfile: Dockerfile
+    container_name: recetas-front
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    depends_on:
+      - back
+
+volumes:
+  mongodb_data:
