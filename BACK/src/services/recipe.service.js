@@ -13,25 +13,19 @@ function validateId(id) {
 
 async function validateIngredients(ingredients) {
     for (const item of ingredients || []) {
-        if (
-            !mongoose.Types.ObjectId.isValid(item.ingredient)
-        ) {
-            const error = new Error(
-                `ID de ingrediente no válido: ${item.ingredient}`
-            );
+        const ingredientId = typeof item.ingredient === 'object' && item.ingredient !== null ? item.ingredient._id : item.ingredient;
+
+        if (!mongoose.Types.ObjectId.isValid(ingredientId)) {
+            const error = new Error(`ID de ingrediente no válido: ${ingredientId}`);
 
             error.status = 400;
             throw error;
         }
 
-        const exists = await Ingredient.exists({
-            _id: item.ingredient
-        });
+        const exists = await Ingredient.exists({_id: ingredientId});
 
         if (!exists) {
-            const error = new Error(
-                `No existe el ingrediente ${item.ingredient}`
-            );
+            const error = new Error(`No existe el ingrediente ${ingredientId}`);
 
             error.status = 400;
             throw error;
@@ -61,14 +55,20 @@ async function getById(id) {
 }
 
 async function create(data) {
-    await validateIngredients(data.ingredients);
+    const ingredients = (data.ingredients || []).map(item => ({
+        ...item,
+        ingredient:
+            typeof item.ingredient === 'object' && item.ingredient !== null ? item.ingredient._id : item.ingredient
+    }));
 
-    const recipe = new Recipe(data);
+    await validateIngredients(ingredients);
+
+    const recipe = new Recipe({...data, ingredients});
 
     await recipe.validate();
     await recipe.save();
 
-    return recipe.populate("ingredients.ingredient");
+    return recipe.populate('ingredients.ingredient');
 }
 
 async function update(id, data) {
